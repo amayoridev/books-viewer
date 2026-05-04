@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-6 flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold">Book Library Dashboard</h1>
+                <p class="text-gray-600">Manage your books and categories</p>
+            </div>
+            <nav class="flex gap-3">
+                <a href="/home" class="text-indigo-600 hover:text-indigo-800">Home</a>
+                <a href="/dashboard" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">Dashboard</a>
+                <button id="logout-btn" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">Logout</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold mb-2">Total Books</h3>
+                <p id="total-books" class="text-2xl font-bold text-blue-600">0</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold mb-2">Total Categories</h3>
+                <p id="total-categories" class="text-2xl font-bold text-green-600">0</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold mb-2">Your Role</h3>
+                <p id="user-role" class="text-2xl font-bold text-purple-600">User</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold mb-2">Recent Activity</h3>
+                <p class="text-sm text-gray-600">Last login: Today</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4">Book Management</h2>
+                <div class="space-y-3">
+                    <button onclick="showAddBook()" class="w-full bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Add New Book</button>
+                    <button onclick="showBooks()" class="w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700">View All Books</button>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4">Category Management</h2>
+                <div class="space-y-3">
+                    <button onclick="showCategoryManager()" class="w-full bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600">Manage Categories</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="add-book-section" class="mt-8 bg-white p-6 rounded-lg shadow-md hidden">
+            <h2 class="text-2xl font-bold mb-4">Add New Book</h2>
+            <form id="add-book-form" enctype="multipart/form-data" class="grid gap-4 md:grid-cols-2">
+                <div>
+                    <label for="book-name" class="block text-sm font-medium text-gray-700">Book Name</label>
+                    <input type="text" id="book-name" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+                </div>
+                <div>
+                    <label for="book-author" class="block text-sm font-medium text-gray-700">Author</label>
+                    <input type="text" id="book-author" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+                </div>
+                <div class="md:col-span-2">
+                    <label for="book-description" class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea id="book-description" rows="3" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                </div>
+                <div>
+                    <label for="book-category" class="block text-sm font-medium text-gray-700">Category</label>
+                    <select id="book-category" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        <option value="">Select Category</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="book-pdf" class="block text-sm font-medium text-gray-700">PDF File</label>
+                    <input type="file" id="book-pdf" accept=".pdf" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+                </div>
+                <div>
+                    <label for="book-thumbnail" class="block text-sm font-medium text-gray-700">Thumbnail</label>
+                    <input type="file" id="book-thumbnail" accept="image/*" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div class="md:col-span-2">
+                    <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700">Add Book</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="books-section" class="mt-8 bg-white p-6 rounded-lg shadow-md hidden">
+            <h2 class="text-2xl font-bold mb-4">Your Books</h2>
+            <div id="books-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </div>
+
+        <div id="categories-section" class="mt-8 bg-white p-6 rounded-lg shadow-md hidden">
+            <h2 class="text-2xl font-bold mb-4">Category Manager</h2>
+            <div class="mb-6">
+                <form id="add-category-form" class="flex gap-4 items-end">
+                    <div class="flex-1">
+                        <label for="category-name" class="block text-sm font-medium text-gray-700">Category Name</label>
+                        <input type="text" id="category-name" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" required>
+                    </div>
+                    <button type="submit" class="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600">Add Category</button>
+                </form>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold mb-4">Existing Categories</h3>
+                <ul id="categories-list" class="space-y-3"></ul>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentUser = null;
+        let allBooks = [];
+        let allCategories = [];
+
+        async function getCurrentUser() {
+            try {
+                const response = await fetch('/api/user');
+                if (response.ok) {
+                    currentUser = await response.json();
+                    document.getElementById('user-role').textContent = currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1);
+                }
+            } catch (err) {
+                window.location.href = '/';
+            }
+        }
+
+        async function loadBooks() {
+            try {
+                const response = await fetch('/api/books');
+                if (response.ok) {
+                    allBooks = await response.json();
+                    document.getElementById('total-books').textContent = allBooks.length;
+                }
+            } catch (err) {
+                console.log('Could not load books');
+            }
+        }
+
+        async function loadCategories() {
+            try {
+                const response = await fetch('/api/categories');
+                if (response.ok) {
+                    allCategories = await response.json();
+                    document.getElementById('total-categories').textContent = allCategories.length;
+                }
+            } catch (err) {
+                console.log('Could not load categories');
+            }
+        }
+
+        async function populateCategorySelect() {
+            const select = document.getElementById('book-category');
+            select.innerHTML = '<option value="">Select Category</option>';
+            allCategories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category._id;
+                option.textContent = category.name;
+                select.appendChild(option);
+            });
+        }
+
+        function showAddBook() {
+            document.getElementById('add-book-section').classList.remove('hidden');
+            document.getElementById('books-section').classList.add('hidden');
+            document.getElementById('categories-section').classList.add('hidden');
+            populateCategorySelect();
+        }
+
+        async function showBooks() {
+            document.getElementById('books-section').classList.remove('hidden');
+            document.getElementById('add-book-section').classList.add('hidden');
+            document.getElementById('categories-section').classList.add('hidden');
+            await renderBooks();
+        }
+
+        async function showCategoryManager() {
+            document.getElementById('categories-section').classList.remove('hidden');
+            document.getElementById('books-section').classList.add('hidden');
+            document.getElementById('add-book-section').classList.add('hidden');
+            await loadCategories();
+            await renderCategories();
+        }
+
+        async function renderBooks() {
+            const booksList = document.getElementById('books-list');
+            booksList.innerHTML = '';
+            if (allBooks.length === 0) {
+                booksList.innerHTML = '<p class="col-span-full text-center text-gray-500">No books found.</p>';
+                return;
+            }
+            allBooks.forEach(book => {
+                const bookDiv = document.createElement('div');
+                bookDiv.className = 'bg-gray-50 p-4 rounded-lg';
+                bookDiv.innerHTML = `
+                    <img src="${book.thumbnailDirectory || '/uploads/thumbnail/default.jpg'}" alt="${book.name}" class="w-full h-32 object-cover rounded mb-2">
+                    <h3 class="font-semibold">${book.name}</h3>
+                    <p class="text-sm text-gray-600">Author: ${book.author}</p>
+                    <p class="text-sm text-gray-600">Category: ${book.category?.name || 'Uncategorized'}</p>
+                    <div class="mt-2 flex gap-2">
+                        <a href="${book.pdfDirectory}" target="_blank" class="text-blue-600 hover:text-blue-800 text-sm">View PDF</a>
+                        ${currentUser && (currentUser._id === book.uploadedBy || currentUser.role === 'admin') ? `<button onclick="deleteBook('${book._id}')" class="text-red-600 hover:text-red-800 text-sm">Delete</button>` : ''}
+                    </div>
+                `;
+                booksList.appendChild(bookDiv);
+            });
+        }
+
+        async function renderCategories() {
+            const categoriesList = document.getElementById('categories-list');
+            categoriesList.innerHTML = '';
+            if (allCategories.length === 0) {
+                categoriesList.innerHTML = '<li class="text-gray-500">No categories found.</li>';
+                return;
+            }
+            categoriesList.innerHTML = allCategories.map(category => `
+                <li class="flex justify-between items-center bg-gray-50 p-4 rounded-lg">
+                    <span class="font-medium">${category.name}</span>
+                    ${currentUser && currentUser.role === 'admin' ? `<button onclick="deleteCategory('${category._id}')" class="text-red-600 hover:text-red-800">Delete</button>` : ''}
+                </li>
+            `).join('');
+        }
+
+        async function deleteBook(bookId) {
+            if (!confirm('Are you sure you want to delete this book?')) return;
+            try {
+                const response = await fetch(`/api/books/${bookId}`, { method: 'DELETE' });
+                if (response.ok) {
+                    await loadBooks();
+                    await renderBooks();
+                } else {
+                    alert('Failed to delete book');
+                }
+            } catch (err) {
+                alert('Error deleting book');
+            }
+        }
+
+        async function deleteCategory(categoryId) {
+            if (!confirm('Are you sure you want to delete this category?')) return;
+            try {
+                const response = await fetch(`/api/categories/${categoryId}`, { method: 'DELETE' });
+                if (response.ok) {
+                    await loadCategories();
+                    await renderCategories();
+                } else {
+                    alert('Failed to delete category');
+                }
+            } catch (err) {
+                alert('Error deleting category');
+            }
+        }
+
+        document.getElementById('add-book-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('name', document.getElementById('book-name').value);
+            formData.append('author', document.getElementById('book-author').value);
+            formData.append('description', document.getElementById('book-description').value);
+            formData.append('category', document.getElementById('book-category').value);
+            formData.append('pdf', document.getElementById('book-pdf').files[0]);
+            if (document.getElementById('book-thumbnail').files[0]) {
+                formData.append('thumbnail', document.getElementById('book-thumbnail').files[0]);
+            }
+
+            try {
+                const response = await fetch('/api/books', { method: 'POST', body: formData });
+                if (response.ok) {
+                    alert('Book added successfully');
+                    document.getElementById('add-book-form').reset();
+                    await loadBooks();
+                } else {
+                    alert('Failed to add book');
+                }
+            } catch (err) {
+                alert('Error adding book');
+            }
+        });
+
+        document.getElementById('add-category-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const categoryName = document.getElementById('category-name').value;
+            try {
+                const response = await fetch('/api/categories', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name: categoryName })
+                });
+                if (response.ok) {
+                    alert('Category added successfully');
+                    document.getElementById('category-name').value = '';
+                    await loadCategories();
+                    await renderCategories();
+                } else {
+                    alert('Failed to add category');
+                }
+            } catch (err) {
+                alert('Error adding category');
+            }
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            try {
+                await fetch('/logout', { method: 'POST' });
+                window.location.href = '/';
+            } catch (err) {
+                window.location.href = '/';
+            }
+        });
+
+        async function init() {
+            await getCurrentUser();
+            await loadBooks();
+            await loadCategories();
+        }
+
+        init();
+    </script>
+</body>
+</html>
